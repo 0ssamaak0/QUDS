@@ -4,6 +4,10 @@ QUDS: Quran Deep Search
 <br>
 </h1>
 
+
+https://github.com/user-attachments/assets/2f33b722-0070-4683-b16b-e74f5e7bde1d
+
+
 QUDS is a tool for searching the Quran using deep learning techniques. It allows users to search for specific ayas or topics in the Quran using natural language. It also supports fuzzy search for keyword matching.
 </div>
 
