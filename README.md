@@ -14,7 +14,7 @@ This allows us to get closer to the meaning and get closer to the topic we are l
 # Embedding Models
 Theoretically, we can use any embedding or reranking models for this task. I really encourage you to try different models especially models with open weights.
 
-But the best one I found right now is Embed 3 and Rerank 3 by [Cohere AI](https://cohere.com/blog/introducing-embed-v3) since their performance in Arabic is unmatched!
+But the best one I found right now is Embed 3 and Rerank 3 by [Cohere AI](https://cohere.com) since their performance in Arabic is unmatched!
 
 # Usage
 You can use the free hosted app from [here](https://quds.onrender.com) but note that it's quite limited. You may also wait for `30-40` seconds until the server responds.
@@ -40,3 +40,6 @@ Since QUDS is based on explanation of the Quran, we can use any tafsir in any la
 - I will try to implement a better way combining the semantic search and the fuzzy search. The current implementations use exact key word matching. But I find the "fuzzy" component is very important.
 - Optimizations to the search process itself.
 - UI Improvements.
+
+# Resources
+- [data-quran](https://github.com/hablullah/data-quran) Repo
