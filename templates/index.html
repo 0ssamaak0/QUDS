@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUDS - Quran Deep Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Color System - Islamic-inspired palette */
+            --primary: #1e88e5;
+            --primary-dark: #0d47a1;
+            --primary-light: #64b5f6;
+            --accent: #43a047;
+            --accent-hover: #2e7d32;
+            --light-bg: #f5f7fa;
+            --dark-bg: #121212;
+            --light-surface: #ffffff;
+            --dark-surface: #1e1e1e;
+            --light-text: #212121;
+            --dark-text: #f5f5f5;
+            --light-text-secondary: #616161;
+            --dark-text-secondary: #b0b0b0;
+            --light-border: #e0e0e0;
+            --dark-border: #333333;
+            --shadow-light: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 8px 16px rgba(0, 0, 0, 0.4);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            background-color: var(--light-bg);
+            color: var(--light-text);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 2rem auto;
+            background: var(--light-surface);
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            padding: 2rem;
+            transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .app-title {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-title i {
+            margin-right: 0.75rem;
+            font-size: 1.8rem;
+        }
+
+        .app-subtitle {
+            font-size: 1rem;
+            color: var(--light-text-secondary);
+            font-weight: 400;
+        }
+
+        .search-form {
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-input-wrapper {
+            display: flex;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1rem;
+            border: 2px solid var(--light-border);
+            border-radius: 8px;
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--light-surface);
+            color: var(--light-text);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-text-secondary);
+            pointer-events: none;
+        }
+
+        .options-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .toggle-checkbox {
+            display: none;
+        }
+
+        .toggle-label {
+            display: inline-block;
+            font-weight: 500;
+            margin-right: 0.75rem;
+            color: var(--light-text);
+            transition: color var(--transition-speed);
+            cursor: pointer;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background-color: #ccc;
+            border-radius: 12px;
+            transition: background-color var(--transition-speed);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform var(--transition-speed);
+        }
+
+        .toggle-checkbox:checked + .toggle-switch {
+            background-color: var(--accent);
+        }
+
+        .toggle-checkbox:checked + .toggle-switch::after {
+            transform: translateX(24px);
+        }
+
+        .search-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-button i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .search-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.1rem;
+            color: var(--light-text-secondary);
+            display: none;
+        }
+
+        .loading i {
+            margin-right: 0.5rem;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .results-container {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .result-item {
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            background-color: rgba(200, 200, 200, 0.1);
+            border-right: 4px solid var(--accent);
+            text-align: right;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+            direction: rtl;
+            position: relative;
+        }
+
+        .result-item:hover {
+            transform: translateX(-4px);
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: var(--primary);
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+        
+        .result-item {
+            cursor: pointer;
+        }
+        
+        .result-item:active {
+            transform: scale(0.98);
+        }
+        
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--accent);
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast-notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .toast-notification i {
+            margin-right: 8px;
+        }
+
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--light-surface);
+            border-top: 1px solid var(--light-border);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        .footer-text {
+            margin-bottom: 0.75rem;
+            color: var(--light-text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.25rem;
+        }
+
+        .social-link {
+            color: var(--primary);
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: color var(--transition-speed), transform var(--transition-speed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(30, 136, 229, 0.1);
+        }
+
+        .social-link:hover {
+            color: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--dark-bg);
+                color: var(--dark-text);
+            }
+
+            .container {
+                background-color: var(--dark-surface);
+                box-shadow: var(--shadow-dark);
+            }
+
+            .app-subtitle {
+                color: var(--dark-text-secondary);
+            }
+
+            .search-input {
+                background-color: var(--dark-surface);
+                color: var(--dark-text);
+                border-color: var(--dark-border);
+            }
+
+            .search-icon {
+                color: var(--dark-text-secondary);
+            }
+
+            .toggle-label {
+                color: var(--dark-text);
+            }
+
+            .loading {
+                color: var(--dark-text-secondary);
+            }
+
+            .result-item {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+
+            .footer {
+                background-color: var(--dark-surface);
+                border-color: var(--dark-border);
+            }
+
+            .footer-text {
+                color: var(--dark-text-secondary);
+            }
+
+            .social-link {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .app-title {
+                font-size: 1.8rem;
+            }
+
+            .search-input {
+                padding: 0.875rem 0.875rem 0.875rem 2.75rem;
+            }
+
+            .search-icon {
+                left: 0.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-title {
+                font-size: 1.5rem;
+            }
+
+            .app-title i {
+                font-size: 1.4rem;
+            }
+
+            .container {
+                padding: 1.25rem;
+            }
+
+            .search-button {
+                padding: 0.875rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="toast" class="toast-notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message">Aya(s) copied to clipboard!</span>
+    </div>
+
+    <div class="container">
+        <header class="app-header">
+            <h1 class="app-title"></i>QUDS</h1>
+            <p class="app-subtitle">Quran Deep Search</p>
+        </header>
+
+        <form id="searchForm" class="search-form">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="query" class="search-input" name="query" placeholder="Enter your search query..." required>
+            </div>
+
+            <div class="options-row">
+                <label class="toggle-container" for="rerank">
+                    <span class="toggle-label">Enhance Results</span>
+                    <input type="checkbox" id="rerank" class="toggle-checkbox" name="rerank">
+                    <span class="toggle-switch"></span>
+                </label>
+            </div>
+
+            <button type="submit" class="search-button">
+                <i class="fas fa-search"></i>Search Quran
+            </button>
+        </form>
+
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner"></i>Searching the Quran...
+        </div>
+
+        <ul id="results" class="results-container"></ul>
+    </div>
+
+    <footer class="footer">
+        <p class="footer-text">@0ssamaak0</p>
+        <div class="social-icons">
+            <a href="mailto:0ssamaak0@gmail.com" class="social-link" title="Email">
+                <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://github.com/0ssamaak0" class="social-link" title="GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://x.com/0ssamaak0" class="social-link" title="Twitter">
+                <i class="fa-brands fa-x-twitter"></i>
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            // Create a temporary input element
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            
+            // Select and copy the text
+            tempInput.select();
+            document.execCommand('copy');
+            
+            // Remove the temporary element
+            document.body.removeChild(tempInput);
+            
+            // Show toast notification
+            showToast('Verse copied to clipboard!');
+        }
+        
+        // Function to show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            // Set message text
+            toastMessage.textContent = message;
+            
+            // Show the toast
+            toast.classList.add('show');
+            
+            // Hide the toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        document.getElementById('searchForm').onsubmit = async function (e) {
+            e.preventDefault();
+
+            const query = document.getElementById('query').value;
+            const rerank = document.getElementById('rerank').checked;
+            const loadingMessage = document.getElementById('loading');
+            const resultsList = document.getElementById('results');
+
+            // Clear previous results and show the loading message
+            resultsList.innerHTML = '';
+            loadingMessage.style.display = 'block';
+
+            try {
+                const response = await fetch(`/search?query=${encodeURIComponent(query)}&rerank=${rerank}`);
+                const data = await response.json();
+
+                // Hide loading message and display results
+                loadingMessage.style.display = 'none';
+                
+                if (data.length === 0) {
+                    resultsList.innerHTML = `<div class="result-item" style="text-align: center; direction: ltr;">No results found. Try a different search query.</div>`;
+                } else {
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.className = 'result-item';
+                        li.textContent = item;
+                        li.title = "Click to copy this verse to clipboard";
+                        li.addEventListener('click', function() {
+                            copyToClipboard(item);
+                        });
+                        resultsList.appendChild(li);
+                    });
+                }
+            } catch (error) {
+                // Hide loading message and display error
+                loadingMessage.style.display = 'none';
+                resultsList.innerHTML = `<div class="result-item" style="text-align: center; direction: ltr; border-right-color: #e53935;">
+                    <i class="fas fa-exclamation-circle" style="margin-right: 8px; color: #e53935;"></i>
+                    Error fetching results. Please try again later.
+                </div>`;
+            }
+        }
+    </script>
+</body>
+</html>
